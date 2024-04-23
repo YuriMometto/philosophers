@@ -63,7 +63,7 @@ int	check_args(int argc, char **argv)
 	int	index;
 
 	index = 1;
-	if (argc < 5 || argc > 6)
+	if (argc != 5 && argc != 6)
 	{
 		printf("%s\n", "invalid parameter");
 		printf("%s", "<number_of_philosophers> <time_to_die> <time_to_eat> <time_to_sleep>");
@@ -82,7 +82,7 @@ int	check_args(int argc, char **argv)
 	return (0);
 }
 
-void	create_threads(int argc, char **argv)
+void	create_threads(int nb, char **argv)
 {
 	int	index;
 
@@ -94,20 +94,14 @@ void	create_threads(int argc, char **argv)
 
 int	main(int argc, char **argv)
 {
-	int	number_of_philosophers;
-	int time_to_die;
-	int time_to_eat;
-	int	time_to_sleep;
-	int	number_of_times_each_philosophers;
-
 	if (check_args(argc, argv) == 1)
 		return (0);
-	number_of_philosophers = argv[1];
-	time_to_die = argv[2];
-	time_to_eat = argv[3];
-	time_to_sleep = argv[4];
+	number_of_philosophers = ft_atoi(argv[1]);
+	time_to_die = ft_atoi(argv[2]);
+	time_to_eat = ft_atoi(argv[3]);
+	time_to_sleep = ft_atoi(argv[4]);
 	if (argc == 6)
-		number_of_times_each_philosophers = argv[5];
-	
+		number_of_times_each_philosophers = ft_atoi(argv[5]);
+	create_threads(number_of_philosophers, );
 	return(0);
 }

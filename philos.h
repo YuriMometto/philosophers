@@ -16,6 +16,14 @@
 # include <pthread.h>
 # include <stdio.h>
 
+typedef struct	s_philo
+{
+	int	nb_of_philos;
+	int	time_to_death;
+	int	time_to_eat;
+	int	time_to_sleep;
+}	t_philo;
+
 long int	ft_atoi(const char *nptr);
 long int	ft_isdigit(long int c);
 int			check_args(int argc, char **argv);
