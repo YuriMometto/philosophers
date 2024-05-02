@@ -6,7 +6,7 @@
 /*   By: ymometto <ymometto@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 12:50:10 by ymometto          #+#    #+#             */
-/*   Updated: 2024/04/18 14:09:58 by ymometto         ###   ########.fr       */
+/*   Updated: 2024/04/25 18:14:06 by ymometto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,26 @@
 # include <pthread.h>
 # include <stdio.h>
 
-typedef struct	s_philo
+struct	s_philo;
+
+typedef struct s_philosophers
 {
-	int	nb_of_philos;
-	int	time_to_death;
-	int	time_to_eat;
-	int	time_to_sleep;
+	struct s_philo	*philo;
+}	t_philosophers;
+
+typedef struct s_philo
+{
+	int				num_philo;
+	int				time_death;
+	int				time_eat;
+	int				time_sleep;
+	pthread_mutex_t	forks[200];
+	t_philosophers	philos[200];
 }	t_philo;
 
 long int	ft_atoi(const char *nptr);
 long int	ft_isdigit(long int c);
 int			check_args(int argc, char **argv);
-void		create_threads(int argc, char **argv);
+int			create_threads(int argc, char **argv);
 
 #endif

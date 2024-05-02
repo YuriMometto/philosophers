@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   errors.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ymometto <ymometto@student.42.rio>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/04/25 13:43:52 by ymometto          #+#    #+#             */
+/*   Updated: 2024/04/25 14:23:58 by ymometto         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philos.h"
 
 int	error_message(char *msg)
@@ -7,8 +19,6 @@ int	error_message(char *msg)
 	index = 0;
 	while (msg[index])
 		index++;
-	write(1, "Error: ", 7);
-	write(1, msg, index);
-	write(1, "\n", 1);
+	printf("Error: %s\n", msg);
 	return (1);
 }
