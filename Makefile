@@ -2,7 +2,7 @@ NAME= philos.a
 
 CC= cc
 
-SRCS= philosophers.c erros.c
+SRCS= philosophers.c errors.c start.c utils.c
 
 OBJS= $(SRCS:.c=.o)
 
