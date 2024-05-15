@@ -1,8 +1,8 @@
-NAME= philos.a
+NAME= philo.a
 
 CC= cc
 
-SRCS= philosophers.c errors.c start.c utils.c
+SRCS= philo.c data_init.c utils.c errors.c
 
 OBJS= $(SRCS:.c=.o)
 

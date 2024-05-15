@@ -5,16 +5,17 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ymometto <ymometto@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/25 13:43:52 by ymometto          #+#    #+#             */
-/*   Updated: 2024/05/03 09:14:52 by ymometto         ###   ########.fr       */
+/*   Created: 2024/05/15 15:44:32 by ymometto          #+#    #+#             */
+/*   Updated: 2024/05/15 15:46:43 by ymometto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philos.h"
+#include "philo.h"
 
-int	error_message(char *msg)
+int	print_error(char *error)
 {
-	printf("Error: %s\n", msg);
+	printf(RED"%s\n",error);
+	printf(G"USAGE: <PHILO> <DIE> <EAT> <SLEEP> [LIMIT_MEALS]\n");
 	return (1);
 }
 
@@ -26,3 +27,4 @@ int	error_type(int error)
 		error_message("Failure in the creating mutex!");
 	return (1);
 }
+

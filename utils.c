@@ -5,55 +5,47 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ymometto <ymometto@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/09 15:10:20 by ymometto          #+#    #+#             */
-/*   Updated: 2024/05/09 15:15:37 by ymometto         ###   ########.fr       */
+/*   Created: 2024/05/15 15:31:14 by ymometto          #+#    #+#             */
+/*   Updated: 2024/05/15 15:48:39 by ymometto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philos.h"
+#include "philo.h"
 
-long int	ft_isdigit(long int c)
+char	*valid_input(char *str)
 {
-	if (c >= 48 && c <= 57)
-		return (1);
-	else
-		return (0);
+	int		len;
+	char	*nbr;
+
+	len = 0;
+	while (*str && *str == ' ')
+		++str;
+	if(*str == '+')
+		++str;
+	if(*str == '-')
+		print_error(RED"Negative numbers aren't accepted\n");
+	if(!(*str >= '0' && *str <= '9'))
+		print_error(RED"Not a correct number!\n");
+	nbr = str;
+	while(*str++ >= '0' && *str++ <= '9')
+		len++;
+	if(len > 10)
+		print_error(RED"Number too big\n");
+	return (nbr);
 }
 
-int	ft_isnbr(char *nbr)
+long	ft_atoi(char *str)
 {
-	int	index;
+	long	res;
 
-	index = 0;
-	if (nbr[0] == '-')
-		return (0);
-	while (nbr[index])
+	res = 0;
+	str = valid_input(str);
+	while(*str && (*str >= '0' && *str <= '9'))
 	{
-		if (!ft_isdigit(nbr[index]))
-			return (0);
-		index++;
+		res = (res * 10) + (*str - '0');
+		str++;
 	}
-	return (1);
-}
-
-long int	ft_atoi(const char *nptr)
-{
-	long int	index;
-	long int	signal;
-	long int	counter;
-
-	counter = 0;
-	signal = 1;
-	index = 0;
-	while ((nptr[index] >= 9 && nptr[index] <= 13) || nptr[index] == ' ')
-		index++;
-	if (nptr[index] == '+' || nptr[index] == '-')
-	{
-		if (nptr[index] == '-')
-			signal *= -1;
-		index++;
-	}
-	while (nptr[index] >= '0' && nptr[index] <= '9')
-		counter = counter * 10 + (nptr[index++] - '0');
-	return (counter * signal);
+	if (res > INT_MAX)
+		print_error(RED"Number too big\n");
+	return (res);
 }
