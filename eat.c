@@ -1,28 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   errors.c                                           :+:      :+:    :+:   */
+/*   eat.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ymometto <ymometto@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/15 15:44:32 by ymometto          #+#    #+#             */
-/*   Updated: 2024/05/17 10:10:29 by ymometto         ###   ########.fr       */
+/*   Created: 2024/05/17 14:39:07 by ymometto          #+#    #+#             */
+/*   Updated: 2024/05/17 15:10:48 by ymometto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	print_error(char *error)
+int	eat(t_philo *philo)
 {
-	printf("%s\n", error);
-	return (1);
-}
-
-int	error_type(int error)
-{
-	if (error == 1)
-		error_message("Some invalid argument!");
-	else if (error == 2)
-		error_message("Failure in the creating mutex!");
-	return (1);
+	if (!get_fork(philo))
+		return (0);
+	print_action(philo, "The philo is eating");
+	philo->death = timestamp() + &philo->table.time_eat;
+	while ()
 }

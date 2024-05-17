@@ -2,7 +2,7 @@ NAME= philo.a
 
 CC= cc
 
-SRCS= philo.c data_init.c utils.c errors.c
+SRCS= philo.c data_init.c utils.c errors.c philo_actions.c
 
 OBJS= $(SRCS:.c=.o)
 
