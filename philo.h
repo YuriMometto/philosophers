@@ -34,12 +34,17 @@ typedef struct s_table
 	long			meals_limit;
 	long			start_simulation;
 	long			end_simulation;
-	pthread_mutex_t	mutex_print;
-	pthread_mutex_t	mutex_eat;
-	pthread_mutex_t	mutex_stop;
 	pthread_t		watcher;
 	t_philo			*philos;
 }		t_table;
+
+typedef struct s_mutexes
+{
+	long			eated;
+	pthread_mutex_t	mutex_print;
+	pthread_mutex_t	mutex_eat;
+	pthread_mutex_t	mutex_stop;
+}		t_mutexes;
 
 typedef struct s_philo
 {
@@ -47,33 +52,40 @@ typedef struct s_philo
 	long				fork;
 	long				nbr_meals;
 	long				full;
-	long				last_meal_time;
+	long				ate;
+	long				eated;
 	long				death;
+	long				last_meal_time;
 	long				time_to_death;
 	long				stop;
 	pthread_t			thread_id;
 	pthread_mutex_t		mutex_fork;
 	t_table				*table;
+	t_mutexes			*mutexes;
 }		t_philo;
 
 /*------------------PROTO----------------------*/
 //ERROR TREATEMENT
 int			print_error(char *error);
-int			error_type(int error);
 int			check_arguments(int argc, char **argv);
 //INIT
 void		data_init(t_table *table, char **argv);
-void		init_mutex(t_table *table);
+void		init_mutex(t_table *table, t_mutexes *mutexes);
 void		init_philo(t_table *table);
 //UTILS
 int			ft_isnbr(char *nbr);
-long int	ft_isdigit(char *str);
+long int	ft_isdigit(char c);
 long		ft_atoi(char *str);
 char		*valid_input(char *str);
+void		print_action(t_philo *philo, char *str);
 //ROUTINE
 void		*monitor(void *arg);
 void		*routine(void *arg);
 //ACTIONS
+int			one_fork(t_philo *philo, t_philo *fork, char *str);
+int			get_fork(t_philo *philo);
+void		return_forks(t_philo *philo);
+int			haven_eat(t_philo *philo);
 int			is_dead(t_philo *philo);
 int			philo_wait(t_philo *philo, long act_time);
 int			philo_sleep(t_philo *philo);

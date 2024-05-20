@@ -17,12 +17,3 @@ int	print_error(char *error)
 	printf("%s\n", error);
 	return (1);
 }
-
-int	error_type(int error)
-{
-	if (error == 1)
-		error_message("Some invalid argument!");
-	else if (error == 2)
-		error_message("Failure in the creating mutex!");
-	return (1);
-}

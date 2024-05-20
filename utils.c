@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-long int	ft_isdigit(long int c)
+long int	ft_isdigit(char c)
 {
 	if (c >= 48 && c <= 57)
 		return (1);
@@ -47,14 +47,14 @@ char	*valid_input(char *str)
 	if (*str == '+')
 		++str;
 	if (*str == '-')
-		print_error(RED"Negative numbers aren't accepted\n");
+		print_error("Negative numbers aren't accepted\n");
 	if (!(*str >= '0' && *str <= '9'))
-		print_error(RED"Not a correct number!\n");
+		print_error("Not a correct number!\n");
 	nbr = str;
 	while (*str++ >= '0' && *str++ <= '9')
 		len++;
 	if (len > 10)
-		print_error(RED"Number too big\n");
+		print_error("Number too big\n");
 	return (nbr);
 }
 
@@ -70,6 +70,35 @@ long	ft_atoi(char *str)
 		str++;
 	}
 	if (res > INT_MAX)
-		print_error(RED"Number too big\n");
+		print_error("Number too big\n");
 	return (res);
+}
+
+int	check_arguments(int argc, char **argv)
+{
+	int	i;
+
+	i = 1;
+	if ((ft_atoi(argv[1]) < 1) || (ft_atoi(argv[1]) > 200))
+	{
+		print_error("Put only 1-200 philosophers\n");
+		return (1);
+	}
+	if (ft_atoi(argv[2]) < 60
+		|| ft_atoi(argv[3]) < 60
+		|| ft_atoi(argv[4]) < 60)
+	{
+		print_error("Timestamps needs to be greater than 60\n");
+		return (1);
+	}
+	while (i < argc)
+	{
+		if ((!ft_isnbr(argv[i]))
+			&& (ft_atoi(argv[i]) <= 0))
+			return (1);
+		else if (ft_atoi(argv[i]) == 1)
+			return (1);
+		i++;
+	}
+	return (0);
 }

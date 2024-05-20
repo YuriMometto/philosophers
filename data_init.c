@@ -6,7 +6,7 @@
 /*   By: ymometto <ymometto@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 15:30:41 by ymometto          #+#    #+#             */
-/*   Updated: 2024/05/17 15:12:20 by ymometto         ###   ########.fr       */
+/*   Updated: 2024/05/20 14:06:24 by ymometto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ void	init_philo(t_table *table)
 	i = 0;
 	while (i < table->nbr_philo)
 	{
-		table->philos[i].index = (t_philo){0};
 		table->philos[i].index = i + 1;
 		table->philos[i].last_meal_time = 0;
 		table->philos[i].fork = i + 1;
@@ -32,11 +31,12 @@ void	init_philo(t_table *table)
 	}
 }
 
-void	init_mutex(t_table *table)
+void	init_mutex(t_table *table, t_mutexes *mutexes)
 {
-	pthread_mutex_init(&table->mutex_stop,NULL);
-	pthread_mutex_init(&table->mutex_print,NULL);
-	pthread_mutex_init(&table->mutex_eat,NULL);
+	mutexes->eated = (long)table->philos;
+	pthread_mutex_init(&mutexes->mutex_stop, NULL);
+	pthread_mutex_init(&mutexes->mutex_print, NULL);
+	pthread_mutex_init(&mutexes->mutex_eat, NULL);
 }
 
 void	data_init(t_table *table, char **argv)
@@ -55,20 +55,6 @@ void	data_init(t_table *table, char **argv)
 	pthread_create(&table->watcher, NULL, monitor, table);
 	pthread_detach(table->watcher);
 	init_philo(table);
-	/*i = 0;
-	while (i < table->nbr_philo)
-    {
-		table->philos[i] = (t_philo){0};
-        table->philos[i].index = i + 1;
-        table->philos[i].fork = i + 1;
-        table->philos[i].mutex_fork = table->philos[i].mutex_fork;
-        table->philos[i].table = table;
-		//printf("philo stop-> %ld\n", table->philos[i].stop);
-		//printf("philo death-> %ld\n", table->philos[i].death);
-		pthread_mutex_init(&table->philos[i].mutex_fork, NULL);
-        pthread_create(&table->philos[i].thread_id, NULL, routine, &table->philos[i]);
-		i++;
-    }*/
 	i = 0;
 	while (i < table->nbr_philo)
 	{
