@@ -1,29 +1,49 @@
-NAME= philo
+NAME=philo
 
-CC= cc
+SRCS=main.c philo.c philo_operations.c philo_utils.c philo_forks.c utils.c
+OBJS=$(SRCS:.c=.o)
 
-SRCS= philo.c data_init.c utils.c errors.c philo_actions.c eat.c
+DEBUG_FLAGS=-fsanitize=thread -g
+COMPILER= cc -Wall -Wextra -Werror
 
-OBJS= $(SRCS:.c=.o)
+.c.o:
+	@ $(COMPILER) -c $< -o $(<:.c=.o)
+	@ printf "compiling $<                                \r"
 
-CFLAGS= -Wall -Wextra -Werror
-
-INCLUDE= -lpthread
+$(NAME): $(OBJS)
+	@ printf "\ncompile success\n"
+	@ $(COMPILER) $(OBJS) -o $(NAME)
 
 all: $(NAME)
 
-$(NAME): $(OBJS)
-	$(CC) $(INCLUDE) $(CFLAGS) -o $(NAME) $(OBJS)
-
-.c.o:	$(SRCS)
-	$(CC) $(CFLAGS) -c $< -o $(<:.c=.o)
-
 clean:
-	rm -rf $(OBJS)
+	@ rm -f $(OBJS)
 
 fclean: clean
-	rm -rf $(NAME)
+	@ rm -f $(NAME)
 
-re: fclean all
+re: fclean $(NAME)
 
-.PHONY: clean fclean re
+
+
+#ARG					=	1 800 200 200   # The philosopher should not eat and should die
+#ARG					=	5 800 200 200   # No philosopher should die.
+#ARG					=	5 800 200 200 7 # No philosopher should die.
+#ARG					=	4 410 200 200   # No philosopher should die.
+#ARG					=	4 310 200 100 7 # One philosopher should die.
+#ARG					=	4 400 200 200 # No philosopher should die.
+
+#ARG					=	5 410 200 100 7 # One philosopher should die.
+#ARG					=	5 120 80 80 	# Moana tolds all will die
+#ARG					=	2 200 50 50 1
+#ARG					=	50 1000 60 60 1
+#ARG					=	2 110 50 50 2
+
+test: re
+	@ ./$(NAME) $(ARG)
+
+valgrind:				re
+						valgrind --leak-check=full --show-leak-kinds=all -s --track-origins=yes ./$(NAME) $(ARG)
+
+hell:				re
+						valgrind --tool=helgrind ./$(NAME) $(ARG)

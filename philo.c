@@ -5,90 +5,72 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ymometto <ymometto@student.42.rio>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/15 15:30:58 by ymometto          #+#    #+#             */
-/*   Updated: 2024/05/20 14:05:56 by ymometto         ###   ########.fr       */
+/*   Created: 2024/05/22 13:45:45 by ymometto          #+#    #+#             */
+/*   Updated: 2024/05/22 13:45:46 by ymometto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philosophers.h"
 
-void	print_action(t_philo *philo, char *str)
+void	*philo_day(void *arg)
 {
-	if (is_dead(philo))
-		return;
-	pthread_mutex_lock(&philo->mutexes->mutex_print);
-	printf("philosopher [%ld] %s\n", philo->index, str);
-	pthread_mutex_unlock(&philo->mutexes->mutex_print);
-}
+	t_philo	*philo_data;
+	int		table_finish;
 
-void	*monitor(void *arg)
-{
-	t_philo *watcher;
-	t_table	*table;
-	int		i;
-
-	table = arg;
-	i = 0;
-	while(1)
+	philo_data = (t_philo *)arg;
+	pthread_mutex_lock(&philo_data->table->gate);
+	table_finish = philo_data->table->finished;
+	pthread_mutex_unlock(&philo_data->table->gate);
+	if (philo_data->index % 2)
+		usleep(1000);
+	while (1)
 	{
-		watcher = &table->philos[i];
-		if(watcher->death == 1)
-		{
-			table->end_simulation = 1;
-			pthread_mutex_lock(&watcher->mutexes->mutex_print);
-			printf("philosopher[%ld] died\n", table->philos[i].index);
-			pthread_mutex_unlock(&watcher->mutexes->mutex_print);
-			break;
-		}
-		if(watcher->full == 1)
-			watcher->stop = 1;
-		if(i == table->nbr_philo)
-			i = 0;
-		i++;
+		if (table_finish)
+			break ;
+		if (philo_think(philo_data))
+			break ;
+		if (philo_eat(philo_data) && check_eat_count(philo_data))
+			break ;
+		if (philo_sleep(philo_data))
+			break ;
 	}
 	return (NULL);
 }
 
-void	*routine(void *arg)
+int	create_philo(int index, t_philo *philo, t_table *table)
 {
-	t_philo *philo;
-
-	philo = arg;
-	philo->time_to_death = timestamp() + philo->table->time_die;
-	if(philo->index % 2 == 0)
-		usleep(100);
-	while(1)
-	{
-		print_action(philo,"pensando de cria");
-		if(!eat(philo))
-			break;
-		if(!philo_sleep(philo))
-			break;
-	}
-	return (NULL);
+	philo->index = index;
+	philo->last_time_eat = table->start_time;
+	philo->table = table;
+	philo->eat_count = 0;
+	if (pthread_create(&philo->thread, NULL, &philo_day, philo) != 0)
+		return (0);
+	return (1);
 }
 
-int	main(int argc, char **argv)
+int	create_philos(t_table *table)
 {
-	t_table		*table;
-	t_mutexes	*mutexes;
+	int	i;
 
-	table = malloc(sizeof(t_table));
-	mutexes = malloc(sizeof(t_mutexes));
-	if (!table)
-		return (free(table), 0);
-	if (argc == 5 || argc == 6)
+	table->philos = (t_philo *)malloc(table->num_philos * sizeof(t_philo));
+	table->forks = (pthread_mutex_t *)malloc(table->num_philos
+			* sizeof(pthread_mutex_t));
+	table->gate = (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER;
+	i = -1;
+	while (++i < table->num_philos)
+		pthread_mutex_init(&table->forks[i], NULL);
+	i = -1;
+	while (++i < table->num_philos)
 	{
-		//start  - check input before putting into table
-		//put_input(&table,argv);
-		if (check_arguments(argc, argv))
+		if (!create_philo(i, &table->philos[i], table))
 			return (0);
-		init_mutex(table, mutexes);
-		data_init(table, argv);
-		//start_dinner(&table);
-		//leaks - > philos full || 1 philo died
-		//clean_table(&table);
 	}
-	else
-		print_error("INVALID ARGUMENTS\n");
+	i = -1;
+	create_vigilant(table);
+	while (++i < table->num_philos)
+	{
+		if (pthread_join(table->philos[i].thread, NULL) != 0)
+			return (0);
+	}
+	return (1);
 }
